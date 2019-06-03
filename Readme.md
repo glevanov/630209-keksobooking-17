@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
-* Студент: [Григорий Леванов](https://up.htmlacademy.ru/javascript/17/user/630209).
-* Наставник: `Неизвестно`.
+* Студент: [Григорий Леванов](https://htmlacademy.ru/profile/id630209).
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
