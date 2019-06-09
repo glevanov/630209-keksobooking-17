@@ -72,7 +72,7 @@ var getMockData = function () {
 /**
  * Возвращает NodeList пинов с данными
  * @param {array} data Массив данных меток
- * @return {object}
+ * @return {Node}
  */
 var getPins = function (data) {
   var fragment = document.createDocumentFragment();
