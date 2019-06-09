@@ -29,14 +29,14 @@ var getLeadingZeroString = function (n) {
  * @return {string}
  */
 var getMockType = function () {
-  var Types = [
+  var types = [
     'palace',
     'flat',
     'house',
     'bungalo',
   ];
 
-  return Types[getRandomInteger(0, Types.length - 1)];
+  return types[getRandomInteger(0, types.length - 1)];
 };
 
 /**
@@ -69,7 +69,38 @@ var getMockData = function () {
   return arr;
 };
 
+/**
+ * Возвращает NodeList пинов с данными
+ * @param {array} data Массив данных меток
+ * @return {object}
+ */
+var getPins = function (data) {
+  var fragment = document.createDocumentFragment();
+  var template = document.querySelector('#pin').content;
+
+  data.forEach(function (item) {
+    var element = template.cloneNode(true).querySelector('.map__pin');
+    var image = element.querySelector('img');
+    element.style = 'left: ' + item.location.x + 'px; top: ' + item.location.y + 'px;';
+    image.src = item.author.avatar;
+    image.alt = 'заголовок объявления';
+    fragment.appendChild(element);
+  });
+
+  return fragment;
+};
+
+/**
+ * Вставляет пины на карту
+ */
+var insertPins = function () {
+  var container = map.querySelector('.map__pins');
+  container.appendChild(getPins(pinData));
+};
+
 var map = document.querySelector('.map');
 var mapWidth = map.clientWidth;
+var pinData = getMockData();
 
 map.classList.remove('map--faded');
+insertPins();
