@@ -5,8 +5,8 @@ var MAX_Y = 630;
 
 /**
  * Возвращает случайное число в заданном диапазоне
- * @param {number} min минимальное значение
- * @param {number} max максимальное значение
+ * @param {number} min Минимальное значение
+ * @param {number} max Максимальное значение
  * @return {number}
  */
 var getRandomInteger = function (min, max) {
@@ -15,7 +15,7 @@ var getRandomInteger = function (min, max) {
 
 /**
  * Переводит число в строку и добавляет ведущий ноль если нужно
- * @param {number} n число
+ * @param {number} n Число
  * @return {string}
  */
 var getLeadingZeroString = function (n) {
@@ -70,7 +70,30 @@ var getMockData = function () {
 };
 
 /**
- * Возвращает NodeList пинов с данными
+ * Задает необходимые пину параметры
+ * @param {Node} pin DOM-элемент пина
+ * @param {object} data Данные для пина в виде объекта
+ * @return {Node}
+ */
+var setPinProperties = function (pin, data) {
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
+  var X_OFFSET = -(PIN_WIDTH / 2);
+  var Y_OFFSET = -(PIN_HEIGHT);
+
+  var image = pin.querySelector('img');
+  var elementX = data.location.x + X_OFFSET;
+  var elementY = data.location.y + Y_OFFSET;
+
+  pin.style = 'left: ' + elementX + 'px; top: ' + elementY + 'px;';
+  image.src = data.author.avatar;
+  image.alt = 'заголовок объявления';
+
+  return pin;
+};
+
+/**
+ * Возвращает NodeList пинов с данными в виде фрагмента
  * @param {array} data Массив данных меток
  * @return {Node}
  */
@@ -79,12 +102,8 @@ var getPins = function (data) {
   var template = document.querySelector('#pin').content;
 
   data.forEach(function (item) {
-    var element = template.cloneNode(true).querySelector('.map__pin');
-    var image = element.querySelector('img');
-    element.style = 'left: ' + item.location.x + 'px; top: ' + item.location.y + 'px;';
-    image.src = item.author.avatar;
-    image.alt = 'заголовок объявления';
-    fragment.appendChild(element);
+    var pin = template.cloneNode(true).querySelector('.map__pin');
+    fragment.appendChild(setPinProperties(pin, item));
   });
 
   return fragment;
