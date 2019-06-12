@@ -2,6 +2,12 @@
 
 var MIN_Y = 130;
 var MAX_Y = 630;
+var MAP_WIDTH = 1200;
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+var PIN_X_OFFSET = -(PIN_WIDTH / 2);
+var PIN_Y_OFFSET = -(PIN_HEIGHT);
+var PINS_QUANTITY = 8;
 
 /**
  * Возвращает случайное число в заданном диапазоне
@@ -28,7 +34,7 @@ var getLeadingZeroString = function (n) {
  * Возвращает случайный тип из набора типов
  * @return {string}
  */
-var getMockType = function () {
+var getType = function () {
   var types = [
     'palace',
     'flat',
@@ -43,15 +49,15 @@ var getMockType = function () {
  * Описывает объект с тестовыми данными
  * @constructor
  */
-function MockItem() {
+function Item() {
   this.author = {
     avatar: 'img/avatars/user' + getLeadingZeroString(getRandomInteger(1, 8)) + '.png',
   };
   this.offer = {
-    type: getMockType(),
+    type: getType(),
   };
   this.location = {
-    x: getRandomInteger(0, mapWidth),
+    x: getRandomInteger(0, MAP_WIDTH),
     y: getRandomInteger(MIN_Y, MAX_Y),
   };
 }
@@ -61,29 +67,24 @@ function MockItem() {
  * @return {array}
  */
 var getMockData = function () {
-  var arr = [];
-  var SIZE_LIMIT = 8;
-  for (var i = 0; i < SIZE_LIMIT; i++) {
-    arr.push(new MockItem());
+  var pins = [];
+  for (var i = 0; i < PINS_QUANTITY; i++) {
+    pins.push(new Item());
   }
-  return arr;
+  return pins;
 };
 
 /**
  * Задает необходимые пину параметры
- * @param {Node} pin DOM-элемент пина
+ * @param {Node} template Шаблон пина
  * @param {object} data Данные для пина в виде объекта
  * @return {Node}
  */
-var setPinProperties = function (pin, data) {
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
-  var X_OFFSET = -(PIN_WIDTH / 2);
-  var Y_OFFSET = -(PIN_HEIGHT);
-
+var setPinProperties = function (template, data) {
+  var pin = template.cloneNode(true).querySelector('.map__pin');
   var image = pin.querySelector('img');
-  var elementX = data.location.x + X_OFFSET;
-  var elementY = data.location.y + Y_OFFSET;
+  var elementX = data.location.x + PIN_X_OFFSET;
+  var elementY = data.location.y + PIN_Y_OFFSET;
 
   pin.style = 'left: ' + elementX + 'px; top: ' + elementY + 'px;';
   image.src = data.author.avatar;
@@ -97,13 +98,12 @@ var setPinProperties = function (pin, data) {
  * @param {array} data Массив данных меток
  * @return {Node}
  */
-var getPins = function (data) {
+var getTemplatePins = function (data) {
   var fragment = document.createDocumentFragment();
   var template = document.querySelector('#pin').content;
 
   data.forEach(function (item) {
-    var pin = template.cloneNode(true).querySelector('.map__pin');
-    fragment.appendChild(setPinProperties(pin, item));
+    fragment.appendChild(setPinProperties(template, item));
   });
 
   return fragment;
@@ -114,12 +114,9 @@ var getPins = function (data) {
  */
 var insertPins = function () {
   var container = map.querySelector('.map__pins');
-  container.appendChild(getPins(pinData));
+  container.appendChild(getTemplatePins(getMockData()));
 };
 
 var map = document.querySelector('.map');
-var mapWidth = map.clientWidth;
-var pinData = getMockData();
-
 map.classList.remove('map--faded');
 insertPins();
