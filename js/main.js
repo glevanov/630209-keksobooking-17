@@ -117,6 +117,26 @@ var insertPins = function () {
   container.appendChild(getTemplatePins(getMockData()));
 };
 
+/**
+ * Активирует карту и форму
+ */
+var activateControls = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  controls.forEach(function (control) {
+    control.disabled = false;
+  });
+};
+
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-insertPins();
+var pin = map.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var controls = [].concat(
+    Array.from(map.querySelectorAll('.map__filter')),
+    map.querySelector('.map__features'),
+    Array.from(adForm.querySelectorAll('.ad-form fieldset'))
+);
+
+pin.addEventListener('click', function () {
+  activateControls();
+});
