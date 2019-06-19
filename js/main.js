@@ -141,6 +141,7 @@ var setAddress = function () {
 
 var onPinClick = function () {
   activateControls();
+  insertPins();
   setAddress();
 };
 
