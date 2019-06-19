@@ -5,6 +5,7 @@ var MAX_Y = 630;
 var MAP_WIDTH = 1200;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var PIN_CENTER_OFFSET = 52 / 2;
 var PIN_X_OFFSET = -(PIN_WIDTH / 2);
 var PIN_Y_OFFSET = -(PIN_HEIGHT);
 var PINS_QUANTITY = 8;
@@ -128,6 +129,21 @@ var activateControls = function () {
   });
 };
 
+/**
+ * Задает адрес в поле адреса
+ */
+var setAddress = function () {
+  var target = pin.getBoundingClientRect();
+  var X = target.left + PIN_CENTER_OFFSET;
+  var Y = target.top + PIN_CENTER_OFFSET;
+  addressInput.value = X + ', ' + Y;
+};
+
+var onPinClick = function () {
+  activateControls();
+  setAddress();
+};
+
 var map = document.querySelector('.map');
 var pin = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
@@ -136,7 +152,6 @@ var controls = [].concat(
     map.querySelector('.map__features'),
     Array.from(adForm.querySelectorAll('.ad-form fieldset'))
 );
+var addressInput = adForm.querySelector('#address');
 
-pin.addEventListener('click', function () {
-  activateControls();
-});
+pin.addEventListener('mouseup', onPinClick);
