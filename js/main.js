@@ -140,9 +140,12 @@ var setAddress = function () {
 };
 
 var onPinClick = function () {
-  activateControls();
-  insertPins();
-  setAddress();
+  if (!isMapActive) {
+    activateControls();
+    insertPins();
+    setAddress();
+    isMapActive = true;
+  }
 };
 
 var map = document.querySelector('.map');
@@ -154,5 +157,6 @@ var controls = [].concat(
     Array.from(adForm.querySelectorAll('.ad-form fieldset'))
 );
 var addressInput = adForm.querySelector('#address');
+var isMapActive = false;
 
 pin.addEventListener('mouseup', onPinClick);
