@@ -155,4 +155,15 @@ var controls = Array.from(document.querySelectorAll('.map__filter, .map__feature
 var addressInput = adForm.querySelector('#address');
 var isMapActive = false;
 
+var form = {
+  state: {
+    title: '',
+    address: '',
+    type: '',
+    price: '',
+    timein: '',
+    timeout: '',
+  },
+};
+
 pin.addEventListener('mouseup', onPinClick);
