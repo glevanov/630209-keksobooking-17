@@ -5,7 +5,7 @@ var MAX_Y = 630;
 var MAP_WIDTH = 1200;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var PIN_CENTER_OFFSET = 52 / 2;
+var PIN_CENTER_OFFSET = 26;
 var PIN_X_OFFSET = -(PIN_WIDTH / 2);
 var PIN_Y_OFFSET = -(PIN_HEIGHT);
 var PINS_QUANTITY = 8;
@@ -151,11 +151,7 @@ var onPinClick = function () {
 var map = document.querySelector('.map');
 var pin = map.querySelector('.map__pin--main');
 var adForm = document.querySelector('.ad-form');
-var controls = [].concat(
-    Array.from(map.querySelectorAll('.map__filter')),
-    map.querySelector('.map__features'),
-    Array.from(adForm.querySelectorAll('.ad-form fieldset'))
-);
+var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
 var addressInput = adForm.querySelector('#address');
 var isMapActive = false;
 
