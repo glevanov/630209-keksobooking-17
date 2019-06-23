@@ -5,6 +5,7 @@ var MAX_Y = 630;
 var MAP_WIDTH = 1200;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
+var PIN_CENTER_OFFSET = 26;
 var PIN_X_OFFSET = -(PIN_WIDTH / 2);
 var PIN_Y_OFFSET = -(PIN_HEIGHT);
 var PINS_QUANTITY = 8;
@@ -117,6 +118,41 @@ var insertPins = function () {
   container.appendChild(getTemplatePins(getMockData()));
 };
 
+/**
+ * Активирует карту и форму
+ */
+var activateControls = function () {
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+  controls.forEach(function (control) {
+    control.disabled = false;
+  });
+};
+
+/**
+ * Задает адрес в поле адреса
+ */
+var setAddress = function () {
+  var target = pin.getBoundingClientRect();
+  var X = target.left + PIN_CENTER_OFFSET;
+  var Y = target.top + PIN_CENTER_OFFSET;
+  addressInput.value = X + ', ' + Y;
+};
+
+var onPinClick = function () {
+  if (!isMapActive) {
+    activateControls();
+    insertPins();
+    setAddress();
+    isMapActive = true;
+  }
+};
+
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-insertPins();
+var pin = map.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
+var addressInput = adForm.querySelector('#address');
+var isMapActive = false;
+
+pin.addEventListener('mouseup', onPinClick);
