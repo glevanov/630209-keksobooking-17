@@ -155,15 +155,49 @@ var controls = Array.from(document.querySelectorAll('.map__filter, .map__feature
 var addressInput = adForm.querySelector('#address');
 var isMapActive = false;
 
-var form = {
-  state: {
+var Form = function () {
+  this.state = {
     title: '',
     address: '',
     type: '',
     price: '',
     timein: '',
     timeout: '',
-  },
+  };
+  this.getState = function (key) {
+    return this.state[key];
+  };
+  this.setState = function (key, value) {
+    this.state[key] = value;
+  };
+  this.getInputs = function () {
+    var DOMMountPoint = document.querySelector('.ad-form');
+    var inputSelectors = '#' + Object.keys(this.state).join(', #');
+    return Array.from(DOMMountPoint.querySelectorAll(inputSelectors));
+  };
+  this.updateInput = function (input, key) {
+    input.value = this.getState(key);
+  };
+  this.handleInputChange = function (evt) {
+    var target = evt.target;
+    var key = target.id;
+    var value = target.value;
+    this.setState(key, value);
+    this.updateInput(target, key);
+  }.bind(this);
+  this.addInputListeners = function (handler) {
+    var inputs = this.getInputs();
+    inputs.forEach(function (input) {
+      input.addEventListener('change', handler);
+    });
+  };
+  this.init = function () {
+    this.addInputListeners(this.handleInputChange);
+  };
 };
 
+var form = new Form();
+
 pin.addEventListener('mouseup', onPinClick);
+onPinClick();
+form.init();
