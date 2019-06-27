@@ -179,36 +179,42 @@ var MinPrices = {
  * @constructor
  */
 var Form = function () {
+  this.formElement = document.querySelector('.ad-form');
   this.state = {
     fields: {
       title: {
         value: '',
-        validityMessage: null,
+        validityMessage: '',
+        element: this.formElement.querySelector('#title'),
       },
       address: {
         value: '',
-        validityMessage: null,
+        validityMessage: '',
+        element: this.formElement.querySelector('#address'),
       },
       type: {
         value: '',
-        validityMessage: null,
+        validityMessage: '',
+        element: this.formElement.querySelector('#type'),
       },
       price: {
         value: '',
-        validityMessage: null,
+        validityMessage: '',
+        element: this.formElement.querySelector('#price'),
       },
       timein: {
         value: '',
-        validityMessage: null,
+        validityMessage: '',
+        element: this.formElement.querySelector('#timein'),
       },
       timeout: {
         value: '',
-        validityMessage: null,
+        validityMessage: '',
+        element: this.formElement.querySelector('#timeout'),
       },
     },
     readyToSubmit: false,
   };
-  this.formElement = document.querySelector('.ad-form');
   this.fields = Object.keys(this.state.fields);
   this.inputs = Array.from(this.formElement.querySelectorAll('#' + this.fields.join(', #')));
   /**
@@ -395,13 +401,11 @@ var Form = function () {
   this.checkValidity = function () {
     this.setValidity(this.setField, this.dispatchValidator);
     var validityMessages = [];
-    for (var key in this.state.fields) {
-      if (this.state.fields.hasOwnProperty(key)) {
-        validityMessages.push(this.state.fields[key]['validityMessage']);
+    for (var field in this.state.fields) {
+      if (this.state.fields.hasOwnProperty(field)) {
+        validityMessages.push(this.state.fields[field]['validityMessage']);
       }
     }
-    console.log(validityMessages);
-    // TODO Написать функцию установки дефолтных значений в стейт
     // TODO Написать функцию вывода ошибок
     // TODO Проверить адрес отправки формы
     var isEverythingValid = validityMessages.every(function (message) {
@@ -420,11 +424,24 @@ var Form = function () {
     }
   }.bind(this);
   /**
+   * Собирает значения полей из разметки и записывает в стейт
+   */
+  this.setFieldsFromMarkup = function () {
+    var key = 'value';
+    for (var field in this.state.fields) {
+      if (this.state.fields.hasOwnProperty(field)) {
+        var element = this.getField(field, 'element');
+        this.setField(field, key, element.value);
+      }
+    }
+  };
+  /**
    * Инициализирует форму
    */
   this.init = function () {
     this.addInputListeners(this.handleInputChange);
     this.formElement.addEventListener('submit', this.handleSubmit);
+    this.setFieldsFromMarkup();
   };
 };
 
