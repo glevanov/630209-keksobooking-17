@@ -396,18 +396,33 @@ var Form = function () {
     });
   };
   /**
+   * Выводит ошибки в каждом поле
+   */
+  this.outputValidity = function () {
+    var key = 'validityMessage';
+    for (var field in this.state.fields) {
+      if (this.state.fields.hasOwnProperty(field)) {
+        var message = this.getField(field, key);
+        if (message.length > 0) {
+          this.state.fields[field]['element'].setCustomValidity(message);
+        } else {
+          this.state.fields[field]['element'].setCustomValidity(VALIDATION_SUCCESS_CODE);
+        }
+      }
+    }
+  };
+  /**
    * Выполняет все проверки валидности и задает значение флагу readyToSubmit
    */
   this.checkValidity = function () {
     this.setValidity(this.setField, this.dispatchValidator);
+    this.outputValidity();
     var validityMessages = [];
     for (var field in this.state.fields) {
       if (this.state.fields.hasOwnProperty(field)) {
         validityMessages.push(this.state.fields[field]['validityMessage']);
       }
     }
-    // TODO Написать функцию вывода ошибок
-    // TODO Проверить адрес отправки формы
     var isEverythingValid = validityMessages.every(function (message) {
       return (message === VALIDATION_SUCCESS_CODE);
     });
