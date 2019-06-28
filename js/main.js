@@ -180,61 +180,41 @@ var MinPrices = {
  */
 var Form = function () {
   this.formElement = document.querySelector('.ad-form');
+  this.elements = {
+    title: this.formElement.querySelector('#title'),
+    address: this.formElement.querySelector('#address'),
+    type: this.formElement.querySelector('#type'),
+    price: this.formElement.querySelector('#price'),
+    timein: this.formElement.querySelector('#timein'),
+    timeout: this.formElement.querySelector('#timeout'),
+  };
   this.state = {
-    fields: {
-      title: {
-        value: '',
-        validityMessage: '',
-        element: this.formElement.querySelector('#title'),
-      },
-      address: {
-        value: '',
-        validityMessage: '',
-        element: this.formElement.querySelector('#address'),
-      },
-      type: {
-        value: '',
-        validityMessage: '',
-        element: this.formElement.querySelector('#type'),
-      },
-      price: {
-        value: '',
-        validityMessage: '',
-        element: this.formElement.querySelector('#price'),
-      },
-      timein: {
-        value: '',
-        validityMessage: '',
-        element: this.formElement.querySelector('#timein'),
-      },
-      timeout: {
-        value: '',
-        validityMessage: '',
-        element: this.formElement.querySelector('#timeout'),
-      },
+    values: {
+      title: '',
+      address: '',
+      type: '',
+      price: '',
+      timein: '',
+      timeout: '',
     },
     readyToSubmit: false,
   };
-  this.fields = Object.keys(this.state.fields);
-  this.inputs = Array.from(this.formElement.querySelectorAll('#' + this.fields.join(', #')));
   /**
-   * Геттер значений ключей в объекте элемента формы
-   * @param {string} field Название элемента формы
-   * @param {string} key Название ключа, из которого нужно достать данные
-   * @return {string|boolean|null}
+   * Геттер значений элемента формы
+   * @param {string} key Название ключа с элементом формы
+   * @return {string}
    */
-  this.getField = function (field, key) {
-    return this.state.fields[field][key];
+  this.getValue = function (key) {
+    return this.state.values[key];
   };
   /**
-   * Сеттер значений ключей в объекте элемента формы
-   * @param {string} field Название элемента формы
-   * @param {string} key Название ключа, в который нужно сохранить данные
-   * @param {string} value Значение, которое нужно сохранить в ключ
+   * Сеттер значений элемента формы
+   * @param {string} key Название ключа с элементом формы
+   * @param {string} value Значение для записи в элемент формы
    */
-  this.setField = function (field, key, value) {
-    this.state.fields[field][key] = value;
-  }.bind(this);
+  this.setValue = function (key, value) {
+    this.state.values[key] = value;
+  };
   /**
    * Геттер значения готовности формы к отправке
    * @return {boolean}
@@ -252,10 +232,9 @@ var Form = function () {
   /**
    * Обновляет значение элемента формы
    * @param {Object} input Элемент формы
-   * @param {string} key Название ключа, в который нужно сохранить данные
    */
-  this.updateInput = function (input, key) {
-    input.value = this.getField(input.id, key);
+  this.updateInput = function (input) {
+    input.value = this.getValue(input.id);
   };
   /**
    * Обработчик обновления значения элемента формы
@@ -265,31 +244,33 @@ var Form = function () {
     var target = evt.target;
     var key = target.id;
     var value = target.value;
-    this.setField(key, 'value', value);
-    this.updateInput(target, 'value');
+    this.setValue(key, value);
+    this.updateInput(target);
+  }.bind(this);
+  /**
+   * Задает одинаковое значение инпутам времени при их изменении
+   * @param {Object} evt Объект события
+   */
+  this.handleTimeChange = function (evt) {
+    var target = evt.target;
+    var value = target.value;
+    if (target === this.elements.timein) {
+      this.elements.timeout.value = value;
+    } else {
+      this.elements.timein.value = value;
+    }
   }.bind(this);
   /**
    * Добавляет обработчики на инпуты
-   * @param {function} handler Функция-обработчик
    */
-  this.addInputListeners = function (handler) {
-    this.inputs.forEach(function (input) {
-      input.addEventListener('change', handler);
-    });
-  };
-  /**
-   * Валидирует поле Заголовка
-   * @param {string} title Значение поля
-   * @return {string}
-   */
-  this.validateTitle = function (title) {
-    if (title.trim().length > 100) {
-      return 'Длина заголовка не может быть больше 100 символов';
+  this.addInputListeners = function () {
+    for (var element in this.elements) {
+      if (this.elements.hasOwnProperty(element)) {
+        this.elements[element].addEventListener('change', this.handleInputChange);
+      }
     }
-    if (title.trim().length <= 30) {
-      return 'Длина заголовка не может быть меньше 30 символов';
-    }
-    return VALIDATION_SUCCESS_CODE;
+    this.elements.timein.addEventListener('change', this.handleTimeChange);
+    this.elements.timeout.addEventListener('change', this.handleTimeChange);
   };
   /**
    * Валидирует поле Адреса
@@ -363,90 +344,35 @@ var Form = function () {
     return VALIDATION_SUCCESS_CODE;
   };
   /**
-   * Возвращает значение функции валидации в зависимости от переданного поля
-   * @param {string} field Название элемента формы
-   * @return {string}
+   * Выводит результаты кастомной валидации
    */
-  this.dispatchValidator = function (field) {
-    switch (field) {
-      case 'title':
-        return this.validateTitle(this.state.fields.title.value);
-      case 'address':
-        return this.validateAddress(this.state.fields.address.value);
-      case 'type':
-        return this.validateType(this.state.fields.type.value);
-      case 'price':
-        return this.validatePrice(this.state.fields.price.value, this.state.fields.type.value);
-      case 'timein':
-        return this.validateTime(this.state.fields.timein.value, this.state.fields.timeout.value);
-      case 'timeout':
-        return this.validateTime(this.state.fields.timein.value, this.state.fields.timeout.value);
-    }
-    return undefined;
-  }.bind(this);
-  /**
-   * Задает сообщение о валидации всем полям формы
-   * @param {function} setter Функция для записи значения валидации
-   * @param {function} dispatcher Функция получения значения валидации по типу поля
-   */
-  this.setValidity = function (setter, dispatcher) {
-    var key = 'validityMessage';
-    this.fields.forEach(function (field) {
-      setter(field, key, dispatcher(field));
-    });
-  };
-  /**
-   * Выводит ошибки в каждом поле
-   */
-  this.outputValidity = function () {
-    var key = 'validityMessage';
-    for (var field in this.state.fields) {
-      if (this.state.fields.hasOwnProperty(field)) {
-        var message = this.getField(field, key);
-        if (message.length > 0) {
-          this.state.fields[field]['element'].setCustomValidity(message);
-        } else {
-          this.state.fields[field]['element'].setCustomValidity(VALIDATION_SUCCESS_CODE);
-        }
-      }
-    }
-  };
-  /**
-   * Выполняет все проверки валидности и задает значение флагу readyToSubmit
-   */
-  this.checkValidity = function () {
-    this.setValidity(this.setField, this.dispatchValidator);
-    this.outputValidity();
-    var validityMessages = [];
-    for (var field in this.state.fields) {
-      if (this.state.fields.hasOwnProperty(field)) {
-        validityMessages.push(this.state.fields[field]['validityMessage']);
-      }
-    }
-    var isEverythingValid = validityMessages.every(function (message) {
-      return (message === VALIDATION_SUCCESS_CODE);
-    });
-    this.setReadyToSubmit(isEverythingValid);
+  this.outputValidation = function () {
+    this.elements.address.setCustomValidity(this.validateAddress(this.state.values.address));
+    this.elements.type.setCustomValidity(this.validateType(this.state.values.type));
+    this.elements.price.setCustomValidity(this.validatePrice(this.state.values.price, this.state.values.type));
+    this.elements.timein.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
+    this.elements.timeout.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
   };
   /**
    * Обработчик отправки формы
    * @param {Object} evt Объект события
    */
   this.handleSubmit = function (evt) {
-    this.checkValidity();
+    this.outputValidation();
     if (!this.getReadyToSubmit()) {
       evt.preventDefault();
     }
+    // Почему-то ивент стартует только один раз
+    console.log(this.state.values);
+    console.log('fired');
   }.bind(this);
   /**
    * Собирает значения полей из разметки и записывает в стейт
    */
   this.setFieldsFromMarkup = function () {
-    var key = 'value';
-    for (var field in this.state.fields) {
-      if (this.state.fields.hasOwnProperty(field)) {
-        var element = this.getField(field, 'element');
-        this.setField(field, key, element.value);
+    for (var element in this.elements) {
+      if (this.elements.hasOwnProperty(element)) {
+        this.setValue(this.elements[element].id, this.elements[element].value);
       }
     }
   };
@@ -454,7 +380,7 @@ var Form = function () {
    * Инициализирует форму
    */
   this.init = function () {
-    this.addInputListeners(this.handleInputChange);
+    this.addInputListeners();
     this.formElement.addEventListener('submit', this.handleSubmit);
     this.setFieldsFromMarkup();
   };
