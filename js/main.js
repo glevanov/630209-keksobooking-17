@@ -261,6 +261,25 @@ var Form = function () {
     }
   }.bind(this);
   /**
+   * Меняет плейсхолдер цены в зависимости от типа жилья
+   */
+  this.handleTypeChange = function () {
+    switch (this.elements.type.value) {
+      case 'palace':
+        this.elements.price.placeholder = MinPrices['palace'];
+        break;
+      case 'flat':
+        this.elements.price.placeholder = MinPrices['flat'];
+        break;
+      case 'house':
+        this.elements.price.placeholder = MinPrices['house'];
+        break;
+      case 'bungalo':
+        this.elements.price.placeholder = MinPrices['bungalo'];
+        break;
+    }
+  }.bind(this);
+  /**
    * Добавляет обработчики на инпуты
    */
   this.addInputListeners = function () {
@@ -271,6 +290,7 @@ var Form = function () {
     }
     this.elements.timein.addEventListener('change', this.handleTimeChange);
     this.elements.timeout.addEventListener('change', this.handleTimeChange);
+    this.elements.type.addEventListener('change', this.handleTypeChange);
   };
   /**
    * Валидирует поле Адреса
