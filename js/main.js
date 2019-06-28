@@ -426,5 +426,4 @@ var Form = function () {
 var form = new Form();
 
 pin.addEventListener('mouseup', onPinClick);
-onPinClick();
 form.init();
