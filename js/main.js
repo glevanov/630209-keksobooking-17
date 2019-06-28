@@ -354,17 +354,34 @@ var Form = function () {
     this.elements.timeout.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
   };
   /**
+   * Проверяет все ли поля валидны и делает отправку формы
+   */
+  this.switchSubmitFlag = function () {
+    var fieldsValidity = [];
+    for (var element in this.elements) {
+      if (this.elements.hasOwnProperty(element)) {
+        fieldsValidity.push(this.elements[element].validity.valid);
+      }
+    }
+    var isEveryThingValid = fieldsValidity.every(function (item) {
+      return item === true;
+    });
+    if (isEveryThingValid) {
+      this.setReadyToSubmit(true);
+    } else {
+      this.setReadyToSubmit(false);
+    }
+  };
+  /**
    * Обработчик отправки формы
    * @param {Object} evt Объект события
    */
   this.handleSubmit = function (evt) {
     this.outputValidation();
+    this.switchSubmitFlag();
     if (!this.getReadyToSubmit()) {
       evt.preventDefault();
     }
-    // Почему-то ивент стартует только один раз
-    console.log(this.state.values);
-    console.log('fired');
   }.bind(this);
   /**
    * Собирает значения полей из разметки и записывает в стейт
