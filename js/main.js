@@ -361,7 +361,6 @@ var Form = function () {
     this.elements.price.setCustomValidity(this.validatePrice(this.state.values.price, this.state.values.type));
     this.elements.timein.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
     this.elements.timeout.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
-    console.log(this.state.values);
   };
   /**
    * Проверяет все ли поля валидны и делает отправку формы
