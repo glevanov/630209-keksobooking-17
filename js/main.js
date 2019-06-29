@@ -149,7 +149,9 @@ var setAddress = function () {
   var target = pin.getBoundingClientRect();
   var X = target.left + PIN_CENTER_OFFSET;
   var Y = target.top + PIN_CENTER_OFFSET;
-  addressInput.value = X + ', ' + Y;
+  var result = X + ', ' + Y;
+  addressInput.value = result;
+  form.setValue('address', result);
 };
 
 var onPinClick = function () {
@@ -159,19 +161,6 @@ var onPinClick = function () {
     setAddress();
     isMapActive = true;
   }
-};
-
-var map = document.querySelector('.map');
-var pin = map.querySelector('.map__pin--main');
-var adForm = document.querySelector('.ad-form');
-var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
-var addressInput = adForm.querySelector('#address');
-var isMapActive = false;
-var MinPrices = {
-  bungalo: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000,
 };
 
 /**
@@ -372,6 +361,7 @@ var Form = function () {
     this.elements.price.setCustomValidity(this.validatePrice(this.state.values.price, this.state.values.type));
     this.elements.timein.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
     this.elements.timeout.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
+    console.log(this.state.values);
   };
   /**
    * Проверяет все ли поля валидны и делает отправку формы
@@ -423,6 +413,18 @@ var Form = function () {
   };
 };
 
+var map = document.querySelector('.map');
+var pin = map.querySelector('.map__pin--main');
+var adForm = document.querySelector('.ad-form');
+var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
+var addressInput = adForm.querySelector('#address');
+var isMapActive = false;
+var MinPrices = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000,
+};
 var form = new Form();
 
 pin.addEventListener('mouseup', onPinClick);
