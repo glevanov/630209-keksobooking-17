@@ -154,6 +154,9 @@ var setAddress = function () {
   form.setValue('address', result);
 };
 
+/**
+ * Обрабатывает клин на пин и активирует карту
+ */
 var onPinClick = function () {
   if (!isMapActive) {
     activateControls();
