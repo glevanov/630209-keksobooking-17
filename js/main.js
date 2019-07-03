@@ -136,7 +136,7 @@ var insertPins = function () {
  */
 var activateControls = function () {
   map.classList.remove('map--faded');
-  adForm.classList.remove('ad-form--disabled');
+  form.activateForm();
   controls.forEach(function (control) {
     control.disabled = false;
   });
@@ -150,8 +150,7 @@ var setAddress = function () {
   var X = target.left + PIN_CENTER_OFFSET;
   var Y = target.top + PIN_CENTER_OFFSET;
   var result = X + ', ' + Y;
-  addressInput.value = result;
-  form.setValue('address', result);
+  form.updateAddress(result);
 };
 
 /**
@@ -166,21 +165,29 @@ var onPinClick = function () {
   }
 };
 
-/**
- * Полностью описывает объект формы
- * @constructor
- */
-var Form = function () {
-  this.formElement = document.querySelector('.ad-form');
-  this.elements = {
-    title: this.formElement.querySelector('#title'),
-    address: this.formElement.querySelector('#address'),
-    type: this.formElement.querySelector('#type'),
-    price: this.formElement.querySelector('#price'),
-    timein: this.formElement.querySelector('#timein'),
-    timeout: this.formElement.querySelector('#timeout'),
-  };
-  this.state = {
+var map = document.querySelector('.map');
+var pin = map.querySelector('.map__pin--main');
+var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
+var isMapActive = false;
+var MinPrices = {
+  bungalo: 0,
+  flat: 1000,
+  house: 5000,
+  palace: 10000,
+};
+
+var formElement = document.querySelector('.ad-form');
+var elements = {
+  title: formElement.querySelector('#title'),
+  address: formElement.querySelector('#address'),
+  type: formElement.querySelector('#type'),
+  price: formElement.querySelector('#price'),
+  timein: formElement.querySelector('#timein'),
+  timeout: formElement.querySelector('#timeout'),
+};
+
+var form = {
+  state: {
     values: {
       title: '',
       address: '',
@@ -190,106 +197,121 @@ var Form = function () {
       timeout: '',
     },
     readyToSubmit: false,
-  };
+  },
   /**
    * Геттер значений элемента формы
    * @param {string} key Название ключа с элементом формы
    * @return {string}
    */
-  this.getValue = function (key) {
+  getValue: function (key) {
     return this.state.values[key];
-  };
+  },
   /**
    * Сеттер значений элемента формы
    * @param {string} key Название ключа с элементом формы
    * @param {string} value Значение для записи в элемент формы
    */
-  this.setValue = function (key, value) {
+  setValue: function (key, value) {
     this.state.values[key] = value;
-  };
+  },
   /**
    * Геттер значения готовности формы к отправке
    * @return {boolean}
    */
-  this.getReadyToSubmit = function () {
+  getReadyToSubmit: function () {
     return this.state.readyToSubmit;
-  };
+  },
   /**
    * Сеттер значения готовности формы к отправке
    * @param {boolean} value Название элемента формы
    */
-  this.setReadyToSubmit = function (value) {
+  setReadyToSubmit: function (value) {
     this.state.readyToSubmit = value;
-  };
+  },
   /**
    * Обновляет значение элемента формы
    * @param {Object} input Элемент формы
    */
-  this.updateInput = function (input) {
+  updateInput: function (input) {
     input.value = this.getValue(input.id);
-  };
+  },
+  /**
+   * Активирует форму
+   */
+  activateForm: function () {
+    formElement.classList.remove('ad-form--disabled');
+  },
+  /**
+   * Обновляет значение адреса
+   * @param {string} value Значение адреса
+   */
+  updateAddress: function (value) {
+    var key = 'address';
+    elements[key].value = value;
+    this.setValue(key, value);
+  },
   /**
    * Обработчик обновления значения элемента формы
    * @param {Object} evt Объект события
    */
-  this.handleInputChange = function (evt) {
+  handleInputChange: function (evt) {
     var target = evt.target;
     var key = target.id;
     var value = target.value;
     this.setValue(key, value);
     this.updateInput(target);
-  }.bind(this);
+  },
   /**
    * Задает одинаковое значение инпутам времени при их изменении
    * @param {Object} evt Объект события
    */
-  this.handleTimeChange = function (evt) {
+  handleTimeChange: function (evt) {
     var target = evt.target;
     var value = target.value;
-    if (target === this.elements.timein) {
-      this.elements.timeout.value = value;
+    if (target === elements.timein) {
+      elements.timeout.value = value;
     } else {
-      this.elements.timein.value = value;
+      elements.timein.value = value;
     }
-  }.bind(this);
+  },
   /**
    * Меняет плейсхолдер цены в зависимости от типа жилья
    */
-  this.handleTypeChange = function () {
-    switch (this.elements.type.value) {
+  handleTypeChange: function () {
+    switch (elements.type.value) {
       case 'palace':
-        this.elements.price.placeholder = MinPrices['palace'];
+        elements.price.placeholder = MinPrices['palace'];
         break;
       case 'flat':
-        this.elements.price.placeholder = MinPrices['flat'];
+        elements.price.placeholder = MinPrices['flat'];
         break;
       case 'house':
-        this.elements.price.placeholder = MinPrices['house'];
+        elements.price.placeholder = MinPrices['house'];
         break;
       case 'bungalo':
-        this.elements.price.placeholder = MinPrices['bungalo'];
+        elements.price.placeholder = MinPrices['bungalo'];
         break;
     }
-  }.bind(this);
+  },
   /**
    * Добавляет обработчики на инпуты
    */
-  this.addInputListeners = function () {
-    for (var element in this.elements) {
-      if (this.elements.hasOwnProperty(element)) {
-        this.elements[element].addEventListener('change', this.handleInputChange);
+  addInputListeners: function () {
+    for (var element in elements) {
+      if (elements.hasOwnProperty(element)) {
+        elements[element].addEventListener('change', this.handleInputChange.bind(this));
       }
     }
-    this.elements.timein.addEventListener('change', this.handleTimeChange);
-    this.elements.timeout.addEventListener('change', this.handleTimeChange);
-    this.elements.type.addEventListener('change', this.handleTypeChange);
-  };
+    elements.timein.addEventListener('change', this.handleTimeChange.bind(this));
+    elements.timeout.addEventListener('change', this.handleTimeChange.bind(this));
+    elements.type.addEventListener('change', this.handleTypeChange.bind(this));
+  },
   /**
    * Валидирует поле Адреса
    * @param {string} address Значение поля
    * @return {string}
    */
-  this.validateAddress = function (address) {
+  validateAddress: function (address) {
     var coordinates = address.split(', ');
     var X = parseFloat(coordinates[0]);
     var Y = parseFloat(coordinates[1]);
@@ -303,25 +325,25 @@ var Form = function () {
       return 'Неверное значение Y';
     }
     return VALIDATION_SUCCESS_CODE;
-  };
+  },
   /**
    * Валидирует поле Тип жилья
    * @param {string} type Значение поля
    * @return {string}
    */
-  this.validateType = function (type) {
+  validateType: function (type) {
     if (VALID_TYPES.indexOf(type) === -1) {
       return 'Неверный Тип жилья';
     }
     return VALIDATION_SUCCESS_CODE;
-  };
+  },
   /**
    * Валидирует поле Цена за ночь
    * @param {string} price Значение поля Цена за ночь
    * @param {string} type Значение поля Тип жилья
    * @return {string}
    */
-  this.validatePrice = function (price, type) {
+  validatePrice: function (price, type) {
     if (price.trim().length === 0) {
       return 'Не указана Цена за ночь';
     }
@@ -337,14 +359,14 @@ var Form = function () {
       return 'Значение Цены за ночь меньше минимального';
     }
     return VALIDATION_SUCCESS_CODE;
-  };
+  },
   /**
    * Валидирует поля Времени заезда и Времени выезда
    * @param {string} timein Значение поля Время заезда
    * @param {string} timeout Значение поля Время выезда
    * @return {string}
    */
-  this.validateTime = function (timein, timeout) {
+  validateTime: function (timein, timeout) {
     var timeinIndex = VALID_TIMES.indexOf(timein);
     var timeoutIndex = VALID_TIMES.indexOf(timeout);
     if (timeinIndex === -1 || timeoutIndex === -1) {
@@ -354,25 +376,25 @@ var Form = function () {
       return 'Время заезда и Время выезда должны совпадать';
     }
     return VALIDATION_SUCCESS_CODE;
-  };
+  },
   /**
    * Выводит результаты кастомной валидации
    */
-  this.outputValidation = function () {
-    this.elements.address.setCustomValidity(this.validateAddress(this.state.values.address));
-    this.elements.type.setCustomValidity(this.validateType(this.state.values.type));
-    this.elements.price.setCustomValidity(this.validatePrice(this.state.values.price, this.state.values.type));
-    this.elements.timein.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
-    this.elements.timeout.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
-  };
+  outputValidation: function () {
+    elements.address.setCustomValidity(this.validateAddress(this.state.values.address));
+    elements.type.setCustomValidity(this.validateType(this.state.values.type));
+    elements.price.setCustomValidity(this.validatePrice(this.state.values.price, this.state.values.type));
+    elements.timein.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
+    elements.timeout.setCustomValidity(this.validateTime(this.state.values.timein, this.state.values.timeout));
+  },
   /**
    * Проверяет все ли поля валидны и делает отправку формы
    */
-  this.switchSubmitFlag = function () {
+  switchSubmitFlag: function () {
     var fieldsValidity = [];
-    for (var element in this.elements) {
-      if (this.elements.hasOwnProperty(element)) {
-        fieldsValidity.push(this.elements[element].validity.valid);
+    for (var element in elements) {
+      if (elements.hasOwnProperty(element)) {
+        fieldsValidity.push(elements[element].validity.valid);
       }
     }
     var isEveryThingValid = fieldsValidity.every(function (item) {
@@ -383,51 +405,37 @@ var Form = function () {
     } else {
       this.setReadyToSubmit(false);
     }
-  };
+  },
   /**
    * Обработчик отправки формы
    * @param {Object} evt Объект события
    */
-  this.handleSubmit = function (evt) {
+  handleSubmit: function (evt) {
     this.outputValidation();
     this.switchSubmitFlag();
     if (!this.getReadyToSubmit()) {
       evt.preventDefault();
     }
-  }.bind(this);
+  },
   /**
    * Собирает значения полей из разметки и записывает в стейт
    */
-  this.setFieldsFromMarkup = function () {
-    for (var element in this.elements) {
-      if (this.elements.hasOwnProperty(element)) {
-        this.setValue(this.elements[element].id, this.elements[element].value);
+  setFieldsFromMarkup: function () {
+    for (var element in elements) {
+      if (elements.hasOwnProperty(element)) {
+        this.setValue(elements[element].id, elements[element].value);
       }
     }
-  };
+  },
   /**
    * Инициализирует форму
    */
-  this.init = function () {
+  init: function () {
     this.addInputListeners();
-    this.formElement.addEventListener('submit', this.handleSubmit);
+    formElement.addEventListener('submit', this.handleSubmit.bind(this));
     this.setFieldsFromMarkup();
-  };
+  },
 };
-
-var map = document.querySelector('.map');
-var pin = map.querySelector('.map__pin--main');
-var adForm = document.querySelector('.ad-form');
-var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
-var addressInput = adForm.querySelector('#address');
-var isMapActive = false;
-var MinPrices = {
-  bungalo: 0,
-  flat: 1000,
-  house: 5000,
-  palace: 10000,
-};
-var form = new Form();
 
 pin.addEventListener('mouseup', onPinClick);
 form.init();
