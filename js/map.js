@@ -158,8 +158,6 @@
   var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
   var isMapActive = false;
 
-  pin.addEventListener('mouseup', onPinClick);
-
   window.map = {
     init: function () {
       pin.addEventListener('mouseup', onPinClick);
