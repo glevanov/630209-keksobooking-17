@@ -1,9 +1,6 @@
 'use strict';
 
 (function () {
-  var MIN_Y = 130;
-  var MAX_Y = 630;
-  var MAP_WIDTH = 1200;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var PIN_CENTER_OFFSET = 26;
@@ -59,8 +56,8 @@
       type: getType(),
     };
     this.location = {
-      x: getRandomInteger(0, MAP_WIDTH),
-      y: getRandomInteger(MIN_Y, MAX_Y),
+      x: getRandomInteger(0, window.config.MAP_WIDTH),
+      y: getRandomInteger(window.config.MIN_Y, window.config.MAX_Y),
     };
   }
 
@@ -137,8 +134,7 @@
     var target = pin.getBoundingClientRect();
     var X = target.left + PIN_CENTER_OFFSET;
     var Y = target.top + PIN_CENTER_OFFSET;
-    var result = X + ', ' + Y;
-    // window.form.updateAddress(result);
+    window.form.address = X + ', ' + Y;
   };
 
   /**
