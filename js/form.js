@@ -13,70 +13,58 @@
 
   window.form = {
     fields: {
-      title: {
-        value: '',
-      },
-      address: {
-        value: '',
-      },
-      type: {
-        value: '',
-      },
-      price: {
-        value: '',
-      },
-      timein: {
-        value: '',
-      },
-      timeout: {
-        value: '',
-      },
+      title: '',
+      address: '',
+      type: '',
+      price: '',
+      timein: '',
+      timeout: '',
     },
     get title() {
-      return this.fields.title.value;
+      return this.fields.title;
     },
     set title(value) {
       elements.title.value = value;
-      this.fields.title.value = value;
+      this.fields.title = value;
       elements.title.setCustomValidity(window.validation.validateTitle(this.title));
     },
     get address() {
-      return this.fields.address.value;
+      return this.fields.address;
     },
     set address(value) {
       elements.address.value = value;
-      this.fields.address.value = value;
+      this.fields.address = value;
       elements.address.setCustomValidity(window.validation.validateAddress(this.address));
     },
     get type() {
-      return this.fields.type.value;
+      return this.fields.type;
     },
     set type(value) {
       elements.type.value = value;
-      this.fields.type.value = value;
+      this.fields.type = value;
       elements.type.setCustomValidity(window.validation.validateType(this.type));
     },
     get price() {
-      return this.fields.price.value;
+      return this.fields.price;
     },
     set price(value) {
       elements.price.value = value;
-      this.fields.price.value = value;
+      this.fields.price = value;
       elements.price.setCustomValidity(window.validation.validatePrice(this.price, this.type));
     },
     get timein() {
-      return this.fields.timein.value;
+      return this.fields.timein;
     },
     set timein(value) {
       elements.timein.value = value;
-      this.fields.timein.value = value;
+      this.fields.timein = value;
     },
     get timeout() {
-      return this.fields.timeout.value;
+      return this.fields.timeout;
     },
     set timeout(value) {
       elements.timeout.value = value;
-      this.fields.timeout.value = value;
+      this.fields.timeout = value;
     },
     /**
      * Обработчик обновления значения элемента формы
