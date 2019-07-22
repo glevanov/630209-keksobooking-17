@@ -1,13 +1,6 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = 50;
-  var PIN_HEIGHT = 70;
-  var PIN_CENTER_OFFSET = 26;
-  var PIN_X_OFFSET = -(PIN_WIDTH / 2);
-  var PIN_Y_OFFSET = -(PIN_HEIGHT);
-  var PINS_QUANTITY = 8;
-
   /**
    * Возвращает случайное число в заданном диапазоне
    * @param {number} min Минимальное значение
@@ -24,7 +17,9 @@
    * @return {string}
    */
   var getLeadingZeroString = function (n) {
-    return n >= 10
+    var LIMIT = 10;
+
+    return n >= LIMIT
       ? n.toString()
       : '0' + n.toString();
   };
@@ -34,14 +29,9 @@
    * @return {string}
    */
   var getType = function () {
-    var types = [
-      'palace',
-      'flat',
-      'house',
-      'bungalo',
-    ];
+    var length = window.config.TYPES.length;
 
-    return types[getRandomInteger(0, types.length - 1)];
+    return window.config.TYPES[getRandomInteger(0, length - 1)];
   };
 
   /**
@@ -56,8 +46,8 @@
       type: getType(),
     };
     this.location = {
-      x: getRandomInteger(0, window.config.MAP_WIDTH),
-      y: getRandomInteger(window.config.MIN_Y, window.config.MAX_Y),
+      x: getRandomInteger(0, window.config.Map.WIDTH),
+      y: getRandomInteger(window.config.Map.MIN_Y, window.config.Map.MAX_Y),
     };
   }
 
@@ -67,7 +57,7 @@
    */
   var getMockData = function () {
     var pins = [];
-    for (var i = 0; i < PINS_QUANTITY; i++) {
+    for (var i = 0; i < window.config.PINS_QUANTITY; i++) {
       pins.push(new Item());
     }
     return pins;
@@ -82,8 +72,8 @@
   var setPinProperties = function (template, data) {
     var pin = template.cloneNode(true).querySelector('.map__pin');
     var image = pin.querySelector('img');
-    var elementX = data.location.x + PIN_X_OFFSET;
-    var elementY = data.location.y + PIN_Y_OFFSET;
+    var elementX = data.location.x + window.config.Pin.X_OFFSET;
+    var elementY = data.location.y + window.config.Pin.Y_OFFSET;
 
     pin.style = 'left: ' + elementX + 'px; top: ' + elementY + 'px;';
     image.src = data.author.avatar;
@@ -132,8 +122,8 @@
    */
   var setAddress = function () {
     var target = pin.getBoundingClientRect();
-    var X = target.left + PIN_CENTER_OFFSET;
-    var Y = target.top + PIN_CENTER_OFFSET;
+    var X = target.left + window.config.Pin.CENTER_OFFSET;
+    var Y = target.top + window.config.Pin.CENTER_OFFSET;
     window.form.address = X + ', ' + Y;
   };
 

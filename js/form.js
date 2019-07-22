@@ -24,9 +24,11 @@
       return this.fields.title;
     },
     set title(value) {
+      var validateTitle = window.validation.validateTitle;
+
       elements.title.value = value;
       this.fields.title = value;
-      elements.title.setCustomValidity(window.validation.validateTitle(this.title));
+      elements.title.setCustomValidity(validateTitle(this.title));
     },
     get address() {
       return this.fields.address;
@@ -34,23 +36,26 @@
     set address(value) {
       elements.address.value = value;
       this.fields.address = value;
-      elements.address.setCustomValidity(window.validation.validateAddress(this.address));
     },
     get type() {
       return this.fields.type;
     },
     set type(value) {
+      var validateType = window.validation.validateType;
+
       elements.type.value = value;
       this.fields.type = value;
-      elements.type.setCustomValidity(window.validation.validateType(this.type));
+      elements.type.setCustomValidity(validateType(this.type));
     },
     get price() {
       return this.fields.price;
     },
     set price(value) {
+      var validatePrice = window.validation.validatePrice;
+
       elements.price.value = value;
       this.fields.price = value;
-      elements.price.setCustomValidity(window.validation.validatePrice(this.price, this.type));
+      elements.price.setCustomValidity(validatePrice(this.price, this.type));
     },
     get timein() {
       return this.fields.timein;
@@ -66,6 +71,7 @@
       elements.timeout.value = value;
       this.fields.timeout = value;
     },
+
     /**
      * Обработчик обновления значения элемента формы
      * @param {Object} evt Объект события
@@ -75,38 +81,25 @@
       var id = target.id;
       this[id] = target.value;
     },
+
     /**
      * Задает одинаковое значение инпутам времени при их изменении
      * @param {Object} evt Объект события
      */
     handleTimeChange: function (evt) {
-      var target = evt.target;
-      var value = target.value;
-      if (target === elements.timein) {
-        this.timeout = value;
-      } else {
-        this.timein = value;
-      }
+      var value = evt.target.value;
+      this.timeout = value;
+      this.timein = value;
     },
+
     /**
      * Меняет плейсхолдер цены в зависимости от типа жилья
      */
     handleTypeChange: function () {
-      switch (elements.type.value) {
-        case 'palace':
-          elements.price.placeholder = window.config.MinPrices['palace'];
-          break;
-        case 'flat':
-          elements.price.placeholder = window.config.MinPrices['flat'];
-          break;
-        case 'house':
-          elements.price.placeholder = window.config.MinPrices['house'];
-          break;
-        case 'bungalo':
-          elements.price.placeholder = window.config.MinPrices['bungalo'];
-          break;
-      }
+      var type = elements.type.value.toUpperCase();
+      elements.price.placeholder = window.config.MinPrices[type];
     },
+
     /**
      * Добавляет обработчики на инпуты
      */
@@ -115,17 +108,29 @@
       elements.type.addEventListener('change', this.handleInputChange.bind(this));
       elements.type.addEventListener('change', this.handleTypeChange.bind(this));
       elements.price.addEventListener('input', this.handleInputChange.bind(this));
-      elements.timein.addEventListener('change', this.handleInputChange.bind(this));
       elements.timein.addEventListener('change', this.handleTimeChange.bind(this));
-      elements.timeout.addEventListener('change', this.handleInputChange.bind(this));
       elements.timeout.addEventListener('change', this.handleTimeChange.bind(this));
     },
+
+    /**
+     * Удаляет обработчики с инпутов
+     */
+    removeInputListeners: function () {
+      elements.title.removeEventListener('input', this.handleInputChange.bind(this));
+      elements.type.removeEventListener('change', this.handleInputChange.bind(this));
+      elements.type.removeEventListener('change', this.handleTypeChange.bind(this));
+      elements.price.removeEventListener('input', this.handleInputChange.bind(this));
+      elements.timein.removeEventListener('change', this.handleTimeChange.bind(this));
+      elements.timeout.removeEventListener('change', this.handleTimeChange.bind(this));
+    },
+
     /**
      * Активирует форму
      */
     activateForm: function () {
       formElement.classList.remove('ad-form--disabled');
     },
+
     /**
      * Собирает значения полей из разметки и записывает в стейт
      */
@@ -136,6 +141,7 @@
         }
       }
     },
+
     /**
      * Инициализирует форму
      */
