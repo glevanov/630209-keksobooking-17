@@ -2,6 +2,13 @@
 
 (function () {
   /**
+   * Пороговое значение для добавления или недобавления ноля к числу
+   * @readonly
+   * @const {number}
+   */
+  var LIMIT = 10;
+
+  /**
    * Возвращает случайное число в заданном диапазоне
    * @param {number} min Минимальное значение
    * @param {number} max Максимальное значение
@@ -17,8 +24,6 @@
    * @return {string}
    */
   var getLeadingZeroString = function (n) {
-    var LIMIT = 10;
-
     return n >= LIMIT
       ? n.toString()
       : '0' + n.toString();

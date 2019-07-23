@@ -20,9 +20,19 @@
       timein: '',
       timeout: '',
     },
+
+    /**
+     * Геттер поля заголовка
+     * @readonly
+     */
     get title() {
       return this.fields.title;
     },
+
+    /**
+     * Сеттер поля заголовка
+     * @param {string} value Передаваемое значение
+     */
     set title(value) {
       var validateTitle = window.validation.validateTitle;
 
@@ -30,16 +40,36 @@
       this.fields.title = value;
       elements.title.setCustomValidity(validateTitle(this.title));
     },
+
+    /**
+     * Геттер поля адреса
+     * @readonly
+     */
     get address() {
       return this.fields.address;
     },
+
+    /**
+     * Сеттер поля адреса
+     * @param {string} value Передаваемое значение
+     */
     set address(value) {
       elements.address.value = value;
       this.fields.address = value;
     },
+
+    /**
+     * Геттер поля типа жилья
+     * @readonly
+     */
     get type() {
       return this.fields.type;
     },
+
+    /**
+     * Сеттер поля типа жилья
+     * @param {string} value Передаваемое значение
+     */
     set type(value) {
       var validateType = window.validation.validateType;
 
@@ -47,9 +77,19 @@
       this.fields.type = value;
       elements.type.setCustomValidity(validateType(this.type));
     },
+
+    /**
+     * Геттер поля цены
+     * @readonly
+     */
     get price() {
       return this.fields.price;
     },
+
+    /**
+     * Сеттер поля цены
+     * @param {string} value Передаваемое значение
+     */
     set price(value) {
       var validatePrice = window.validation.validatePrice;
 
@@ -57,16 +97,36 @@
       this.fields.price = value;
       elements.price.setCustomValidity(validatePrice(this.price, this.type));
     },
+
+    /**
+     * Геттер поля времени заезда
+     * @readonly
+     */
     get timein() {
       return this.fields.timein;
     },
+
+    /**
+     * Сеттер поля времени заезда
+     * @param {string} value Передаваемое значение
+     */
     set timein(value) {
       elements.timein.value = value;
       this.fields.timein = value;
     },
+
+    /**
+     * Геттер поля времени выезда
+     * @readonly
+     */
     get timeout() {
       return this.fields.timeout;
     },
+
+    /**
+     * Сеттер поля времени выезда
+     * @param {string} value Передаваемое значение
+     */
     set timeout(value) {
       elements.timeout.value = value;
       this.fields.timeout = value;
