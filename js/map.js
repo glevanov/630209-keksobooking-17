@@ -133,9 +133,87 @@
   };
 
   /**
-   * Обрабатывает клин на пин и активирует карту
+   * Обрабатывает mousedown на пин
    */
-  var onPinClick = function () {
+  var onMouseDown = function (evt) {
+    var pinX = evt.clientX;
+    var pinY = evt.clientY;
+
+    var MAP_RECT = map.getBoundingClientRect();
+    var MapBoundaries = {
+      TOP: MAP_RECT.top,
+      RIGHT: MAP_RECT.right,
+      BOTTOM: MAP_RECT.bottom,
+      LEFT: MAP_RECT.left,
+    };
+
+    function onMouseMove(moveEvt) {
+      moveEvt.preventDefault();
+
+      var pinRelativeX;
+      var pinRelativeY;
+
+      function valiatePinCoordinates(coordinates) {
+        var X = coordinates.X;
+        var Y = coordinates.Y;
+
+        var validatedCoordinates;
+
+        if (X < 0) {
+          validatedCoordinates.X = 0;
+        } else if (X > window.config.Map.WIDTH) {
+          validatedCoordinates.X = window.config.Map.WIDTH;
+        } else {
+          validatedCoordinates.X = X;
+        }
+
+        if (Y < window.config.Map.MIN_Y) {
+          validatedCoordinates.Y = window.config.Map.MIN_Y;
+        } else if (X > window.config.Map.MAX_Y) {
+          validatedCoordinates.Y = window.config.Map.MAX_Y;
+        } else {
+          validatedCoordinates.Y = Y;
+        }
+        return validatedCoordinates;
+      }
+
+      function calculatePinPosition() {
+        var horizontalShift = pinX - moveEvt.clientX;
+        var verticalShift = pinY - moveEvt.clientY;
+        // pinRelativePosition = valiatePinCoordinates(sliderPin.offsetLeft - horizontalShift);
+        pinRelativeX = pin.offsetLeft - horizontalShift;
+        pinRelativeY = pin.offsetTop - verticalShift;
+        pinX = moveEvt.clientX;
+        pinY = moveEvt.clientY;
+      }
+
+      function renderSliderPosition() {
+        pin.style.left = pinRelativeX + 'px';
+        pin.style.top = pinRelativeY + 'px'
+      }
+
+      calculatePinPosition();
+      renderSliderPosition();
+
+      // Вот это в самом конце
+      // activateMap();
+    }
+
+
+    function onMouseUp(upEvt) {
+      upEvt.preventDefault();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  };
+
+  /**
+   * Активирует карту
+   */
+  var activateMap = function () {
     if (!isMapActive) {
       activateControls();
       insertPins();
@@ -151,7 +229,7 @@
 
   window.map = {
     init: function () {
-      pin.addEventListener('mouseup', onPinClick);
+      pin.addEventListener('mousedown', onMouseDown);
     }
   };
 })();
