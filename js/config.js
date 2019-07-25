@@ -79,6 +79,7 @@
       WIDTH: PIN_WIDTH,
       HEIGHT: PIN_HEIGHT,
       CENTER_OFFSET: 26,
+      RIGHT_OFFSET: 65,
       X_OFFSET: PIN_X_OFFSET,
       Y_OFFSET: PIN_Y_OFFSET,
     },

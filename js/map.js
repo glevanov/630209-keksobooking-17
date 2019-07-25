@@ -126,84 +126,89 @@
    * Задает адрес в поле адреса
    */
   var setAddress = function () {
-    var target = pin.getBoundingClientRect();
-    var X = target.left + window.config.Pin.CENTER_OFFSET;
-    var Y = target.top + window.config.Pin.CENTER_OFFSET;
+    var X = pin.offsetLeft + window.config.Pin.CENTER_OFFSET;
+    var Y = pin.offsetTop + window.config.Pin.CENTER_OFFSET;
     window.form.address = X + ', ' + Y;
   };
 
   /**
+   * Валидирует координату X
+   * @param {number} X Координата
+   * @return {number}
+   */
+  function validateX(X) {
+    if (X < 0) {
+      return 0;
+    } else if (X > window.config.Map.WIDTH - window.config.Pin.RIGHT_OFFSET) {
+      return window.config.Map.WIDTH - window.config.Pin.RIGHT_OFFSET;
+    } else {
+      return X;
+    }
+  }
+
+  /**
+   * Валидирует координату Y
+   * @param {number} Y Координата
+   * @return {number}
+   */
+  function validateY(Y) {
+    if (Y < window.config.Map.MIN_Y) {
+      return window.config.Map.MIN_Y;
+    } else if (Y > window.config.Map.MAX_Y) {
+      return window.config.Map.MAX_Y;
+    } else {
+      return Y;
+    }
+  }
+
+  /**
    * Обрабатывает mousedown на пин
+   * @param {Object} evt Объект события
    */
   var onMouseDown = function (evt) {
     var pinX = evt.clientX;
     var pinY = evt.clientY;
 
-    var MAP_RECT = map.getBoundingClientRect();
-    var MapBoundaries = {
-      TOP: MAP_RECT.top,
-      RIGHT: MAP_RECT.right,
-      BOTTOM: MAP_RECT.bottom,
-      LEFT: MAP_RECT.left,
-    };
-
+    /**
+     * Обрабатывает mousemove на пин
+     * @param {Object} moveEvt Объект события
+     */
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
 
       var pinRelativeX;
       var pinRelativeY;
 
-      function valiatePinCoordinates(coordinates) {
-        var X = coordinates.X;
-        var Y = coordinates.Y;
-
-        var validatedCoordinates;
-
-        if (X < 0) {
-          validatedCoordinates.X = 0;
-        } else if (X > window.config.Map.WIDTH) {
-          validatedCoordinates.X = window.config.Map.WIDTH;
-        } else {
-          validatedCoordinates.X = X;
-        }
-
-        if (Y < window.config.Map.MIN_Y) {
-          validatedCoordinates.Y = window.config.Map.MIN_Y;
-        } else if (X > window.config.Map.MAX_Y) {
-          validatedCoordinates.Y = window.config.Map.MAX_Y;
-        } else {
-          validatedCoordinates.Y = Y;
-        }
-        return validatedCoordinates;
-      }
-
       function calculatePinPosition() {
-        var horizontalShift = pinX - moveEvt.clientX;
-        var verticalShift = pinY - moveEvt.clientY;
-        // pinRelativePosition = valiatePinCoordinates(sliderPin.offsetLeft - horizontalShift);
-        pinRelativeX = pin.offsetLeft - horizontalShift;
-        pinRelativeY = pin.offsetTop - verticalShift;
+        var NEW_X = pin.offsetLeft - (pinX - moveEvt.clientX);
+        var NEW_Y = pin.offsetTop - (pinY - moveEvt.clientY);
+
+        pinRelativeX = validateX(NEW_X);
+        pinRelativeY = validateY(NEW_Y);
         pinX = moveEvt.clientX;
         pinY = moveEvt.clientY;
       }
 
       function renderSliderPosition() {
         pin.style.left = pinRelativeX + 'px';
-        pin.style.top = pinRelativeY + 'px'
+        pin.style.top = pinRelativeY + 'px';
       }
 
       calculatePinPosition();
       renderSliderPosition();
-
-      // Вот это в самом конце
-      // activateMap();
+      setAddress();
     }
 
-
+    /**
+     * Обрабатывает mouseup на пин
+     * @param {Object} upEvt Объект события
+     */
     function onMouseUp(upEvt) {
       upEvt.preventDefault();
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      activateMap();
+      setAddress();
     }
 
     document.addEventListener('mousemove', onMouseMove);
