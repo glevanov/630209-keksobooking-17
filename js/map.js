@@ -103,11 +103,11 @@
     return fragment;
   };
 
-  var map = document.querySelector('.map');
-  var pin = map.querySelector('.map__pin--main');
+  var mapElement = document.querySelector('.map');
+  var pin = mapElement.querySelector('.map__pin--main');
   var controls = Array.from(document.querySelectorAll('.map__filter, .map__features, .ad-form fieldset'));
 
-  window.map = {
+  var map = {
     isMapActive: false,
     pinX: null,
     pinY: null,
@@ -118,7 +118,7 @@
      * Вставляет пины на карту
      */
     insertPins: function () {
-      var container = map.querySelector('.map__pins');
+      var container = mapElement.querySelector('.map__pins');
       container.appendChild(getTemplatePins(getMockData()));
     },
 
@@ -126,7 +126,7 @@
      * Активирует карту и форму
      */
     activateControls: function () {
-      map.classList.remove('map--faded');
+      mapElement.classList.remove('map--faded');
       window.form.activateForm();
       controls.forEach(function (control) {
         control.disabled = false;
@@ -192,9 +192,8 @@
     onMouseDown: function (evt) {
       this.pinX = evt.clientX;
       this.pinY = evt.clientY;
-
-      document.addEventListener('mousemove', this.onMouseMove.bind(this));
-      document.addEventListener('mouseup', this.onMouseUp.bind(this));
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     },
 
     /**
@@ -214,8 +213,8 @@
      */
     onMouseUp: function (evt) {
       evt.preventDefault();
-      document.removeEventListener('mousemove', this.onMouseMove.bind(this));
-      document.removeEventListener('mouseup', this.onMouseUp.bind(this));
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
       this.activateMap();
       this.setAddress();
     },
@@ -248,4 +247,9 @@
       pin.addEventListener('mousedown', this.onMouseDown.bind(this));
     },
   };
+
+  var onMouseMove = map.onMouseMove.bind(map);
+  var onMouseUp = map.onMouseUp.bind(map);
+
+  window.map = map;
 })();
