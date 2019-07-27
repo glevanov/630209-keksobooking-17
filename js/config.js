@@ -3,30 +3,6 @@
 (function () {
   /**
    * @readonly
-   * @const {number}
-   */
-  var PIN_WIDTH = 50;
-
-  /**
-   * @readonly
-   * @const {number}
-   */
-  var PIN_HEIGHT = 70;
-
-  /**
-   * @readonly
-   * @const {number}
-   */
-  var PIN_X_OFFSET = -(PIN_WIDTH / 2);
-
-  /**
-   * @readonly
-   * @const {number}
-   */
-  var PIN_Y_OFFSET = -(PIN_HEIGHT);
-
-  /**
-   * @readonly
    * @enum {number}
    */
   var AccommodationType = {
@@ -44,12 +20,13 @@
 
   /**
    * @namespace
-   * @property {object} Pin Перечисление для пина
-   * @property {number} Pin.WIDTH Ширина пина
-   * @property {string} Pin.HEIGHT Высота пина
-   * @property {object} Pin.CENTER_OFFSET Смещение центра большого пина для расчета координаты адреса
-   * @property {number} Pin.X_OFFSET Смещение центра пинов по оси X
-   * @property {number} Pin.Y_OFFSET Смещение центра пинов по оси Y
+   * @property {object} MainPin Перечисление для главного пина
+   * @property {object} MainPin.X_OFFSET Смещение указателя пина по оси X
+   * @property {number} MainPin.Y_OFFSET Смещение указателя пина по оси Y
+   * @property {number} MainPin.WIDTH Ширина пина
+   * @property {object} Pin Перечисление для остальных пинов
+   * @property {object} Pin.X_OFFSET Смещение указателя пина по оси X
+   * @property {number} Pin.Y_OFFSET Смещение указателя пина по оси Y
    * @property {number} PINS_QUANTITY Максимальное количество пинов на карте
    * @property {object} Map Перечисление для карты
    * @property {number} Map.MIN_Y Минимальное значение координаты Y
@@ -75,13 +52,19 @@
      * @readonly
      * @enum {number}
      */
+    MainPin: {
+      X_OFFSET: 32.5,
+      Y_OFFSET: 84,
+      WIDTH: 65,
+    },
+
+    /**
+     * @readonly
+     * @enum {number}
+     */
     Pin: {
-      WIDTH: PIN_WIDTH,
-      HEIGHT: PIN_HEIGHT,
-      CENTER_OFFSET: 26,
-      RIGHT_OFFSET: 65,
-      X_OFFSET: PIN_X_OFFSET,
-      Y_OFFSET: PIN_Y_OFFSET,
+      X_OFFSET: 25.5,
+      Y_OFFSET: 70,
     },
 
     /**

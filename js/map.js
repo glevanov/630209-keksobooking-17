@@ -141,8 +141,8 @@
     validateX: function (X) {
       if (X < 0) {
         return 0;
-      } else if (X > window.config.Map.WIDTH - window.config.Pin.RIGHT_OFFSET) {
-        return window.config.Map.WIDTH - window.config.Pin.RIGHT_OFFSET;
+      } else if (X > window.config.Map.WIDTH - window.config.MainPin.WIDTH) {
+        return window.config.Map.WIDTH - window.config.MainPin.WIDTH;
       } else {
         return X;
       }
@@ -223,8 +223,8 @@
      * Задает адрес в поле адреса
      */
     setAddress: function () {
-      var X = pin.offsetLeft + window.config.Pin.CENTER_OFFSET;
-      var Y = pin.offsetTop + window.config.Pin.CENTER_OFFSET;
+      var X = pin.offsetLeft + window.config.MainPin.X_OFFSET;
+      var Y = pin.offsetTop + window.config.MainPin.Y_OFFSET;
       window.form.address = X + ', ' + Y;
     },
 
