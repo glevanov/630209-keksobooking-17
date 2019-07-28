@@ -1,5 +1,10 @@
 'use strict';
 (function () {
+  /**
+   * Код успешного ответа сервера
+   * @readonly
+   * @const {number}
+   */
   var SUCCESS_CODE = 200;
 
   window.backend = {

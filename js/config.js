@@ -46,6 +46,10 @@
    * @property {string} AccommodationType.HOUSE Дом
    * @property {string} AccommodationType.BUNGALO Бунгало
    * @property {array}  TYPES Массив значений для типов жилья
+   * @property {object} Backend Перечисление для работы с бэкэндом
+   * @property {object} Backend.TIMEOUT Значение таймаута
+   * @property {object} Backend.URL_SEND Адрес для отправки данных
+   * @property {object} Backend.URL_GET Адрес для получения данных
    */
   window.config = {
     /**
@@ -116,7 +120,7 @@
 
     /**
      * @readonly
-     * @enum {number | string}
+     * @enum {number|string}
      */
     Backend: {
       TIMEOUT: 10000,
