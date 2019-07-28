@@ -113,5 +113,15 @@
     TITLE_MAX_LENGTH: 100,
     AccommodationType: AccommodationType,
     TYPES: ACCOMODATION_TYPES,
+
+    /**
+     * @readonly
+     * @enum {number | string}
+     */
+    Backend: {
+      TIMEOUT: 10000,
+      URL_SEND: 'https://js.dump.academy/keksobooking',
+      URL_GET: 'https://js.dump.academy/keksobooking/data',
+    }
   };
 })();
