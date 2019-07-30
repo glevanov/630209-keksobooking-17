@@ -11,7 +11,7 @@
     timeout: formElement.querySelector('#timeout'),
   };
 
-  window.form = {
+  var form = {
     fields: {
       title: '',
       address: '',
@@ -164,24 +164,24 @@
      * Добавляет обработчики на инпуты
      */
     addInputListeners: function () {
-      elements.title.addEventListener('input', this.handleInputChange.bind(this));
-      elements.type.addEventListener('change', this.handleInputChange.bind(this));
-      elements.type.addEventListener('change', this.handleTypeChange.bind(this));
-      elements.price.addEventListener('input', this.handleInputChange.bind(this));
-      elements.timein.addEventListener('change', this.handleTimeChange.bind(this));
-      elements.timeout.addEventListener('change', this.handleTimeChange.bind(this));
+      elements.title.addEventListener('input', handleInputChange);
+      elements.type.addEventListener('change', handleInputChange);
+      elements.type.addEventListener('change', handleTypeChange);
+      elements.price.addEventListener('input', handleInputChange);
+      elements.timein.addEventListener('change', handleTimeChange);
+      elements.timeout.addEventListener('change', handleTimeChange);
     },
 
     /**
      * Удаляет обработчики с инпутов
      */
     removeInputListeners: function () {
-      elements.title.removeEventListener('input', this.handleInputChange.bind(this));
-      elements.type.removeEventListener('change', this.handleInputChange.bind(this));
-      elements.type.removeEventListener('change', this.handleTypeChange.bind(this));
-      elements.price.removeEventListener('input', this.handleInputChange.bind(this));
-      elements.timein.removeEventListener('change', this.handleTimeChange.bind(this));
-      elements.timeout.removeEventListener('change', this.handleTimeChange.bind(this));
+      elements.title.removeEventListener('input', handleInputChange);
+      elements.type.removeEventListener('change', handleInputChange);
+      elements.type.removeEventListener('change', handleTypeChange);
+      elements.price.removeEventListener('input', handleInputChange);
+      elements.timein.removeEventListener('change', handleTimeChange);
+      elements.timeout.removeEventListener('change', handleTimeChange);
     },
 
     /**
@@ -210,4 +210,10 @@
       this.setFieldsFromMarkup();
     },
   };
+
+  var handleInputChange = form.handleInputChange.bind(form);
+  var handleTypeChange = form.handleTypeChange.bind(form);
+  var handleTimeChange = form.handleTimeChange.bind(form);
+
+  window.form = form;
 })();

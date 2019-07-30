@@ -2,35 +2,6 @@
 
 (function () {
   /**
-   * Ширина пина
-   * @readonly
-   * @const {number}
-   */
-  var PIN_WIDTH = 50;
-
-  /**
-   * Высота пина
-   * @readonly
-   * @const {number}
-   */
-  var PIN_HEIGHT = 70;
-
-  /**
-   * Смещение центра пинов по оси X
-   * @readonly
-   * @const {number}
-   */
-  var PIN_X_OFFSET = -(PIN_WIDTH / 2);
-
-  /**
-   * Смещение центра пинов по оси Y
-   * @readonly
-   * @const {number}
-   */
-  var PIN_Y_OFFSET = -(PIN_HEIGHT);
-
-  /**
-   * Перечисление для типов жилья
    * @readonly
    * @enum {number}
    */
@@ -42,7 +13,6 @@
   };
 
   /**
-   * Массив значений для типов жилья
    * @readonly
    * @const {array}
    */
@@ -50,55 +20,64 @@
 
   /**
    * @namespace
-   * @property {object} Pin Перечисление для пина
-   * @property {number} Pin.WIDTH Ширина пина
-   * @property {string} Pin.HEIGHT Высота пина
-   * @property {object} Pin.CENTER_OFFSET Смещение центра большого пина для расчета координаты адреса
-   * @property {number} Pin.X_OFFSET Смещение центра пинов по оси X
-   * @property {number} Pin.Y_OFFSET Смещение центра пинов по оси Y
+   * @property {object} MainPin Перечисление для главного пина
+   * @property {object} MainPin.X_OFFSET Смещение указателя пина по оси X
+   * @property {number} MainPin.Y_OFFSET Смещение указателя пина по оси Y
+   * @property {number} MainPin.WIDTH Ширина пина
+   * @property {object} Pin Перечисление для остальных пинов
+   * @property {object} Pin.X_OFFSET Смещение указателя пина по оси X
+   * @property {number} Pin.Y_OFFSET Смещение указателя пина по оси Y
    * @property {number} PINS_QUANTITY Максимальное количество пинов на карте
-   * @property {object} Map
-   * @property {number} Map.MIN_Y: 130,
-   * @property {number} Map.MAX_Y: 630,
-   * @property {number} Map.WIDTH: 1200,
-   * @property {object} MinPrices
-   * @property {number} MinPrices.BUNGALO
-   * @property {number} MinPrices.FLAT
-   * @property {number} MinPrices.HOUSE
-   * @property {number} MinPrices.PALACE
-   * @property {number} MAX_PRICE
-   * @property {number} TITLE_MIN_LENGTH
-   * @property {number} TITLE_MAX_LENGTH
-   * @property {object} AccommodationType
-   * @property {string} AccommodationType.PALACE
-   * @property {string} AccommodationType.FLAT
-   * @property {string} AccommodationType.HOUSE
-   * @property {string} AccommodationType.BUNGALO
-   * @property {array}  TYPES
+   * @property {object} Map Перечисление для карты
+   * @property {number} Map.MIN_Y Минимальное значение координаты Y
+   * @property {number} Map.MAX_Y Максимальное значение координаты Y
+   * @property {number} Map.WIDTH Ширина карты
+   * @property {object} MinPrices Перечисление для минимальных цен жилья
+   * @property {number} MinPrices.BUNGALO Цена для бунгало
+   * @property {number} MinPrices.FLAT Цена для квартиры
+   * @property {number} MinPrices.HOUSE Цена для дома
+   * @property {number} MinPrices.PALACE Цена для дворца
+   * @property {number} MAX_PRICE Максимальное значение цены
+   * @property {number} TITLE_MIN_LENGTH Минимальная длина заголовка
+   * @property {number} TITLE_MAX_LENGTH Максимальная длина заголовка
+   * @property {object} AccommodationType Перечисление для типов жилья
+   * @property {string} AccommodationType.PALACE Дворец
+   * @property {string} AccommodationType.FLAT Квартира
+   * @property {string} AccommodationType.HOUSE Дом
+   * @property {string} AccommodationType.BUNGALO Бунгало
+   * @property {array}  TYPES Массив значений для типов жилья
+   * @property {object} Backend Перечисление для работы с бэкэндом
+   * @property {object} Backend.TIMEOUT Значение таймаута
+   * @property {object} Backend.URL_SEND Адрес для отправки данных
+   * @property {object} Backend.URL_GET Адрес для получения данных
    */
   window.config = {
     /**
-     * Перечисление для пина
+     * @readonly
+     * @enum {number}
+     */
+    MainPin: {
+      X_OFFSET: 32.5,
+      Y_OFFSET: 84,
+      WIDTH: 65,
+    },
+
+    /**
      * @readonly
      * @enum {number}
      */
     Pin: {
-      WIDTH: PIN_WIDTH,
-      HEIGHT: PIN_HEIGHT,
-      CENTER_OFFSET: 26,
-      X_OFFSET: PIN_X_OFFSET,
-      Y_OFFSET: PIN_Y_OFFSET,
+      X_OFFSET: 25.5,
+      Y_OFFSET: 70,
     },
 
     /**
-     * Максимальное количество пинов на карте
      * @readonly
      * @const {number}
      */
     PINS_QUANTITY: 8,
 
     /**
-     * Перечисление для карты
      * @readonly
      * @enum {number}
      */
@@ -109,7 +88,6 @@
     },
 
     /**
-     * Перечисление для минимальных цен жилья
      * @readonly
      * @enum {number}
      */
@@ -121,26 +99,33 @@
     },
 
     /**
-     * Максимальное значение цены
      * @readonly
      * @const {number}
      */
     MAX_PRICE: 1000000,
 
     /**
-     * Минимальная длина заголовка
      * @readonly
      * @const {number}
      */
     TITLE_MIN_LENGTH: 30,
 
     /**
-     * Максимальная длина заголовка
      * @readonly
      * @const {number}
      */
     TITLE_MAX_LENGTH: 100,
     AccommodationType: AccommodationType,
     TYPES: ACCOMODATION_TYPES,
+
+    /**
+     * @readonly
+     * @enum {number|string}
+     */
+    Backend: {
+      TIMEOUT: 10000,
+      URL_SEND: 'https://js.dump.academy/keksobooking',
+      URL_GET: 'https://js.dump.academy/keksobooking/data',
+    }
   };
 })();
